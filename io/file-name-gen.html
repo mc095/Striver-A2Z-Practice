@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Filename Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+  /* Reset & base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    color: #374151; /* Gray-700 */
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Container and layout */
+  header {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+  header .logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #111827; /* Gray-900 */
+    user-select: none;
+    letter-spacing: -0.03em;
+  }
+  main {
+    flex-grow: 1;
+    max-width: 720px;
+    margin: 3rem auto 4rem;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    color: #111827;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  p.description {
+    color: #6b7280; /* Gray-500 */
+    font-size: 1.125rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Card style */
+  .input-card {
+    padding: 2rem 2rem 3rem;
+    background: #f9fafb; /* Gray-50 */
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1.5px solid #d1d5db; /* Gray-300 */
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    color: #1f2937; /* Gray-800 */
+    transition: border-color 0.3s ease;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: #2563eb; /* Blue-600 */
+    box-shadow: 0 0 0 3px #bfdbfe; /* Blue-300 ring */
+  }
+
+  button.convert-btn {
+    align-self: flex-start;
+    background: #111827; /* Gray-900 */
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button.convert-btn:hover,
+  button.convert-btn:focus {
+    background: #1e40af; /* Blue-800 */
+    outline: none;
+  }
+
+  /* Result display */
+  .result-container {
+    margin-top: 2rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.05);
+    padding: 1.5rem 2rem;
+    user-select: all;
+    font-family: mono, monospace;
+    font-size: 1.125rem;
+    color: #111827;
+    word-break: break-word;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .result-text {
+    flex-grow: 1;
+  }
+
+  button.copy-btn {
+    background: #2563eb; /* Blue-600 */
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+  }
+  button.copy-btn:hover,
+  button.copy-btn:focus {
+    background: #1e40af; /* Blue-800 */
+    outline: none;
+  }
+
+  /* Small helper text */
+  .helper-text {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #9ca3af; /* Gray-400 */
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 2rem;
+    }
+    main {
+      margin: 2rem 1rem 3rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-label="Application logo: FileName Generator">FileName Generator</div>
+</header>
+<main>
+  <h1>Create a Clipboard-Friendly File Name</h1>
+  <p class="description">Enter your descriptive sentence below and click "Generate" to create a clean file name that you can copy & paste.</p>
+  <section class="input-card" aria-label="Input form for file name generation">
+    <label for="inputSentence">Enter sentence</label>
+    <textarea id="inputSentence" placeholder="e.g. Find the number that appears once, all others twice" aria-describedby="inputHelper"></textarea>
+    <div class="helper-text" id="inputHelper">Avoid special characters; the app will clean and convert your sentence to a safe file name style.</div>
+    <button class="convert-btn" id="generateBtn" aria-live="polite">Generate File Name</button>
+
+    <div class="result-container" aria-live="polite" aria-atomic="true" role="region" aria-label="Generated file name output">
+      <span class="result-text" id="resultFilename" tabindex="0" aria-label="Generated filename output will appear here"></span>
+      <button class="copy-btn" id="copyBtn" aria-label="Copy generated file name to clipboard">Copy</button>
+    </div>
+  </section>
+</main>
+<script>
+  (() => {
+    const input = document.getElementById('inputSentence');
+    const generateBtn = document.getElementById('generateBtn');
+    const resultText = document.getElementById('resultFilename');
+    const copyBtn = document.getElementById('copyBtn');
+
+    // Function to generate a file name from the sentence:
+    // - Convert to lowercase
+    // - Remove all characters except letters, numbers, spaces
+    // - Replace sequences of spaces with single hyphen
+    // - Remove trailing hyphens
+    // - Limit length (optional) - here we keep full for flexibility
+    // Example: "Find the number that appears once, all others twice"
+    // => "find-the-number-that-appears-once-all-others-twice"
+    function generateFileName(sentence) {
+      if (!sentence) return '';
+
+      // Normalize Unicode (NFKD) and remove accents
+      const normalized = sentence.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+
+      // Lowercase
+      let clean = normalized.toLowerCase();
+
+      // Remove anything except letters, digits, spaces, and hyphens (we allow hyphen for input but normalize it below)
+      clean = clean.replace(/[^a-z0-9\s-]/g, '');
+
+      // Replace multiple hyphens and spaces with a single space
+      clean = clean.replace(/[\s-]+/g, ' ').trim();
+
+      // Replace space with hyphen
+      clean = clean.replace(/\s+/g, '-');
+
+      // Remove leading or trailing hyphens
+      clean = clean.replace(/^-+|-+$/g, '');
+
+      return clean;
+    }
+
+    function updateResult() {
+      const sentence = input.value.trim();
+      const fileName = generateFileName(sentence);
+      if (fileName.length === 0) {
+        resultText.textContent = '';
+        copyBtn.disabled = true;
+      } else {
+        resultText.textContent = fileName;
+        copyBtn.disabled = false;
+      }
+    }
+
+    generateBtn.addEventListener('click', () => {
+      updateResult();
+      // Announce generation complete
+      if (resultText.textContent.length > 0) {
+        resultText.focus();
+      }
+    });
+
+    // Enable pressing Enter+Ctrl or Cmd inside textarea to generate too
+    input.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        generateBtn.click();
+      }
+    });
+
+    // Copy button functionality
+    copyBtn.addEventListener('click', () => {
+      const text = resultText.textContent;
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy';
+          }, 1500);
+        }, () => {
+          // Fallback alert on error
+          alert('Failed to copy, please copy manually.');
+        });
+      }
+    });
+
+    // Initialize with empty result
+    copyBtn.disabled = true;
+  })();
+</script>
+</body>
+</html>
+
